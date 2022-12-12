@@ -3,7 +3,7 @@ title: "Final Report"
 author: "Aidan O'Hara"
 date: "2022-12-11"
 output:
-  html_document: default
+  html_document: 
     df_print: paged
 ---
 
