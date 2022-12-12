@@ -1,0 +1,110 @@
+---
+title: "Final Report"
+author: "Aidan O'Hara"
+date: "2022-12-11"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("mosquitoAnalysis.R")
+```
+
+## Abstract
+
+## Introduction/ info for understanding
+
+Summer's warm weather and rainy climate brings on the perfect opportunity for humanitie's ultimate nemesis to make itself known: Mosquitoes. This [Mosquito Dataset](https://www.kaggle.com/datasets/chicago/chicago-west-nile-virus-mosquito-test-results/metadata), found originally on Kaggle, originally from <https://data.cityofchicago.org/>, contains records about trapped mosquitoes, their response to a West Nile Virus test, and the location of the trap, for seasonal weeks between 2007 and 2022. Mosquitoes while highly adaptable still require specific circumstances to propagate, standing water sources, food sources (us), and other environmental factors. As one such food source, investigation of demographic predictors seemed appealing.
+
+![For emotional impact.](http://t1.gstatic.com/licensed-image?q=tbn:ANd9GcT4OGOxa0KIR6dVwmKFqbHKhOeiMCdy8ncp0KRgrhZSrlWgfrqxDq31UQGrdwx1oUTrApUnFIPMAOtF7MQ)
+
+Joining the Mosquito data with geographic and demographic information from the American Community Survey the following analysis inquires whether local median income and population density influence the number of trapped mosquitoes.
+
+## Method / what did I do
+
+The data is formatted such that each row reports the number of collected mosquitoes, of a specific species, where the sample was collected, and the result of the West Nile Virus test. To keep things straightforward regarding time, only data from 2015 will be used.
+
+```{r}
+head(quito15[,c(4,8:12)],n =3)
+```
+
+Next, median income and population are collected from the American Community Survey at the tract level within Cook County Illinois. After some cleaning, population density is calculated using the included shape files.
+
+```{r}
+disChicago <- st_drop_geometry(chicagoBetter)
+head(disChicago[,c(2:6)],n =3)
+```
+
+By joining the two tables using their included geometry, each mosquito trap is associated with its specific Census Tract and better still, the ACS estimates about the Census Tract in 2015.
+
+Summarizing the resulting join by the Census Tracts, result of the West Nile Virus test, and the week of each given observation results in a table that provides the total captured mosquitoes by week, by Census Tract, and positivity.
+
+Now each observation has:
+
+```{r}
+disWeeks <- select(perWeeks, -geometry)
+head(disWeeks[,c(1:2,4:10)],n =3)
+```
+
+Using the Minnesota Radon example as a guide: The density of trapped mosquitoes in each Census Tract is displayed below. Applying a log transform to the totals for clarity of distribution.
+
+```{r densities, echo=FALSE}
+gG
+```
+
+The changes in the weekly collection of mosquito populations are well represented. The populations registered early in the season are small, before usually swelling, and eventually tapering off. Interpreting the above plots, Tracts with low populations of mosquito are dense to the left of the mean, while Tracts with high populations have a higher incidence of large collections: generating peaks to the right of the mean.
+
+Important to this analysis, there is clear differentiation of which Census Tract the mosquitoes are collected from.
+
+## Result / what did I find
+
+Fitting a Multi-Level-Linear-Model,
+
+`totalMosq ~ log(density) + log(medincome) + (1|NAME)`
+
+provided less than desired results. Instead, this analysis will fit seperate models for population density and median income.
+
+```{r}
+summary(lmer_fit2)
+```
+
+Here, the fixed effect intercept of `12.3` represents the overall average number of mosquitoes caught each week, regardless of Census Tract. This model suggests that increases of the median income log-factor does decrease the caught mosquitoes by a small amount.
+
+```{r}
+summary(lmer_fit3)
+```
+
+The population density model is much more suggestive that something in this analysis is amiss. A fixed intercept, number of mosquitoes caught, of `26.8` is overshadowed by the unanticipated predictive effect of population density. An increased log-factor of population density, rather than incurring an increase in caught mosquitoes, represents a decrease of captured mosquitoes. Perhaps the mosquitoes are less successful in a dense population, this does not agree with the author's assumptions though.
+
+The following plots offer some interpretation of the Census Tract effects.
+
+Median Income:
+
+```{r medincome and tracts, echo=FALSE}
+ggg1
+```
+
+and population density:
+
+```{r density and tracts, echo=FALSE}
+ggg2
+```
+
+Both plots reflect the model findings, that increase in median income and population density incur a reduction in the number of caught mosquitoes. Remember though, increased population density should be more favorable to mosquitoes.
+
+## Discussion / next steps, all the things I didn't do.
+
+This analysis could absolutely be improved with any of the following:
+
+-    Considerations for the broader collection of Census Tracts around each trap site.
+
+-   Inclusion of more interesting American Community Survey variables
+
+-    Analysis of the results of the West Nile Virus Test
+
+-   Categorical analysis of the various Species of captured Mosquitoes.
+
+-   and much more.
