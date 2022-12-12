@@ -18,7 +18,7 @@ source("mosquitoAnalysis.R")
 
 Summer's warm weather and rainy climate brings on the perfect opportunity for humanity's ultimate nemesis to make itself known: Mosquitoes. This [Mosquito Dataset](https://www.kaggle.com/datasets/chicago/chicago-west-nile-virus-mosquito-test-results/metadata), found originally on Kaggle, originally from <https://data.cityofchicago.org/>, contains records about trapped mosquitoes, their response to a West Nile Virus test, and the location of the trap, for seasonal weeks between 2007 and 2022. Mosquitoes while highly adaptable still require specific circumstances to propagate, standing water sources, food sources (us), and other environmental factors. As one such food source, investigation of demographic predictors seemed appealing.
 
-![For emotional impact.](http://t1.gstatic.com/licensed-image?q=tbn:ANd9GcT4OGOxa0KIR6dVwmKFqbHKhOeiMCdy8ncp0KRgrhZSrlWgfrqxDq31UQGrdwx1oUTrApUnFIPMAOtF7MQ)
+![For emotional impact.](emotional_impact.jpg)
 
 Joining the Mosquito data with geographic and demographic information from the American Community Survey the following analysis inquires whether local median income and population density influence the number of trapped mosquitoes.
 
